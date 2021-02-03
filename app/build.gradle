@@ -37,4 +37,6 @@ android {
 
 dependencies {
     implementation 'com.lodz:pandora:1.5.7'
+    implementation project(path: ':eagles')
+
 }
