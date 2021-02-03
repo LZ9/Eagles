@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">Eagles</string>
+    <string name="app_name">EaglesScan</string>
+
+    <string name="main_scan">扫描</string>
+    <string name="main_photo">相册识别</string>
 </resources>
