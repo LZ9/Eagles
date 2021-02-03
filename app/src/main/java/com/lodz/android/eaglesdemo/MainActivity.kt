@@ -1,4 +1,4 @@
-package com.lodz.android.eagles
+package com.lodz.android.eaglesdemo
 
 import com.lodz.android.pandora.base.activity.AbsActivity
 
