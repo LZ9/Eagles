@@ -1,7 +1,6 @@
 package com.rexnjc.ui.widget;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lodz.android.eagles.R;
-import com.rexnjc.ui.compatible.CompatibleConfig;
 
 /**
  * author : leilei.yll
@@ -23,7 +21,6 @@ public class TorchView extends LinearLayout implements View.OnClickListener{
 
     private ImageView torchIv;
     private TextView torchTv;
-    private CompatibleConfig compatibleConfig;
     private OnTorchClickListener onTorchClickListener;
 
     public TorchView(Context context) {
@@ -39,16 +36,12 @@ public class TorchView extends LinearLayout implements View.OnClickListener{
     }
 
     private void init() {
-        compatibleConfig = new CompatibleConfig();
         LayoutInflater.from(getContext()).inflate(R.layout.torch_layout, this, true);
         torchIv = (ImageView) findViewById(R.id.torch_image_view);
         torchTv = (TextView) findViewById(R.id.torch_tips_view);
     }
 
     public void showTorch() {
-        if(!compatibleConfig.checkSupportTorch(Build.MANUFACTURER, Build.MODEL)) {
-            return;
-        }
         this.setVisibility(VISIBLE);
     }
 

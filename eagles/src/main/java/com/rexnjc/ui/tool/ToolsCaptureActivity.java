@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -35,8 +36,13 @@ import com.rexnjc.ui.widget.APTextureView;
 import com.rexnjc.ui.widget.ScanType;
 import com.rexnjc.ui.widget.ma.ToolScanTopView;
 
-public class ToolsCaptureActivity extends Activity
-        implements ScanHandler.ScanResultCallbackProducer, View.OnClickListener{
+public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanResultCallbackProducer, View.OnClickListener{
+
+    public static void start(Context context) {
+        Intent starter = new Intent(context, ToolsCaptureActivity.class);
+        context.startActivity(starter);
+    }
+
     private final String TAG = "ToolsCaptureActivity";
     private ScanType mScanType = ScanType.SCAN_MA;
     private APTextureView mSurfaceView;

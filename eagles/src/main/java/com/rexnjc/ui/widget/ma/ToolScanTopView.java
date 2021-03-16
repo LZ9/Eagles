@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 
 import com.alipay.mobile.mascanengine.IOnMaSDKDecodeInfo;
 import com.lodz.android.eagles.R;
-import com.rexnjc.ui.compatible.CompatibleConfig;
 import com.rexnjc.ui.tool.ToolsCaptureActivity;
 import com.rexnjc.ui.widget.ScaleFinderView;
 import com.rexnjc.ui.widget.ScanRayView;
@@ -34,7 +33,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
     private Runnable showTorchRunnable;
     private int high_threshold = 140;
     private Runnable hideTorchRunnable;
-    private CompatibleConfig compatibleConfig;
     private int autoZoomState;
     private int frameNum = 0;
 
@@ -156,12 +154,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
             return;
         }
         Log.d(TAG, "The ma proportion is " + v);
-        if(compatibleConfig == null) {
-            compatibleConfig = new CompatibleConfig();
-        }
-        if(!compatibleConfig.checkSupportAutoZoom()) {
-            return;
-        }
         if(autoZoomState > 1) {
             return;
         }

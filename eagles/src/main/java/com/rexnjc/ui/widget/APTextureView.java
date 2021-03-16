@@ -47,9 +47,6 @@ public class APTextureView extends TextureView {
 
     private void afterSetSurfaceTexture() {
         Log.d(TAG, "afterSetSurfaceTexture Build.VERSION.SDK_INT:" + Build.VERSION.SDK_INT);
-        if (Build.VERSION.SDK_INT < 16 || Build.VERSION.SDK_INT > 20) {
-            return;
-        }
 
         try {
             if (mSurfaceField == null) {

@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alipay.mobile.mascanengine.MaScanEngineService;
 import com.alipay.mobile.mascanengine.MaScanResult;
 import com.alipay.mobile.mascanengine.impl.MaScanEngineServiceImpl;
-import com.rexnjc.ui.tool.ToolsCaptureActivity;
+import com.lodz.android.eagles.EaglesManager;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 
@@ -35,7 +37,15 @@ public class TestActivity extends AppCompatActivity {
         findViewById(R.id.scan_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TestActivity.this, ToolsCaptureActivity.class));
+//                startActivity(new Intent(TestActivity.this, ToolsCaptureActivity.class));
+                EaglesManager.create()
+                        .setOnScanListener(new EaglesManager.OnScanListener() {
+                            @Override
+                            public void onResult(boolean isSuccess, @NotNull String text) {
+
+                            }
+                        })
+                        .scan(TestActivity.this);
             }
         });
         findViewById(R.id.photo_btn).setOnClickListener(new View.OnClickListener() {

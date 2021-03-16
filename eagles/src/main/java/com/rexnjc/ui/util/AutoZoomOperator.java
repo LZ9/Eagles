@@ -1,9 +1,8 @@
 package com.rexnjc.ui.util;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
+import com.lodz.android.eagles.ScanUiHandler;
 import com.rexnjc.ui.tool.ToolsCaptureActivity;
 
 /**
@@ -16,7 +15,6 @@ public class AutoZoomOperator {
     private static final String TAG = "AutoZoomOperator";
     private volatile boolean disableConitueZoom;
     private ToolsCaptureActivity mActivity;
-    private static Handler handler = new Handler(Looper.getMainLooper());
     private final int MaxIndex = 10;
 
     public AutoZoomOperator(ToolsCaptureActivity activity) {
@@ -46,7 +44,7 @@ public class AutoZoomOperator {
     }
 
     private void invalidate(final int curIndex, final int maxZoom) {
-        handler.postDelayed(new Runnable() {
+        ScanUiHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(curIndex < MaxIndex) {
@@ -56,7 +54,6 @@ public class AutoZoomOperator {
                 }
             }
         }, 20);
-
     }
 
 }
