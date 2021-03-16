@@ -2,4 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lodz.android.eagles">
 
+    <application>
+        <activity
+            android:name="com.rexnjc.ui.tool.ToolsCaptureActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+    </application>
 </manifest>
