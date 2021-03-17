@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/torch_image_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/torch_off"/>
+        <TextView
+                android:id="@+id/torch_tips_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_white"
+                android:textSize="13dp"
+                android:maxLines="1"
+                android:text="@string/open_torch"
+                android:ellipsize="end"
+        />
+
+</merge>
