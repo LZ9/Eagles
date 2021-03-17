@@ -10,8 +10,8 @@ import com.alipay.mobile.bqcscanservice.BQCScanEngine;
 import com.alipay.mobile.bqcscanservice.BQCScanService;
 import com.alipay.mobile.mascanengine.MaScanEngineService;
 import com.alipay.mobile.mascanengine.impl.MaScanEngineServiceImpl;
+import com.lodz.android.eagles.EaglesManager;
 import com.lodz.android.eagles.R;
-import com.rexnjc.ui.widget.ScanType;
 
 
 /**
@@ -58,8 +58,7 @@ public class ScanHandler {
                     return;
                 }
                 MaScanEngineService maScanEngineService = new MaScanEngineServiceImpl();
-                bqcScanService.regScanEngine(ScanType.SCAN_MA.toBqcScanType(), maScanEngineService.getEngineClazz(),
-                        scanResultCallbackProducer.makeScanResultCallback(ScanType.SCAN_MA));
+                bqcScanService.regScanEngine(EaglesManager.TAG, maScanEngineService.getEngineClazz(), scanResultCallbackProducer.makeScanResultCallback());
             }
         });
     }
@@ -74,12 +73,12 @@ public class ScanHandler {
         });
     }
 
-    public void setScanType(final ScanType mScanType) {
+    public void setScanType() {
         scanHandler.post(new Runnable() {
             @Override
             public void run() {
                 curState = 5;
-                bqcScanService.setScanType(mScanType.toBqcScanType());
+                bqcScanService.setScanType(EaglesManager.TAG);
             }
         });
     }
@@ -148,6 +147,6 @@ public class ScanHandler {
     }
 
     public interface ScanResultCallbackProducer {
-        BQCScanEngine.EngineCallback makeScanResultCallback(ScanType type);
+        BQCScanEngine.EngineCallback makeScanResultCallback();
     }
 }

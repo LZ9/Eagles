@@ -33,7 +33,6 @@ import com.lodz.android.eagles.R;
 import com.rexnjc.ui.camera.ScanHandler;
 import com.rexnjc.ui.util.AutoZoomOperator;
 import com.rexnjc.ui.widget.APTextureView;
-import com.rexnjc.ui.widget.ScanType;
 import com.rexnjc.ui.widget.ma.ToolScanTopView;
 
 public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanResultCallbackProducer, View.OnClickListener{
@@ -44,7 +43,6 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
     }
 
     private final String TAG = "ToolsCaptureActivity";
-    private ScanType mScanType = ScanType.SCAN_MA;
     private APTextureView mSurfaceView;
     private ToolScanTopView mScanTopView;
     private BQCScanService bqcScanService;
@@ -111,18 +109,17 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
                 scanHandler.setBqcScanService(bqcScanService);
             }
             scanHandler.registerAllEngine(false);
-            setScanType(mScanType, true);
+            setScanType(true);
         }
     }
 
 
-    public void setScanType(ScanType scanType, boolean firstAutoStarted) {
-        if (!firstAutoStarted && mScanType == scanType || bqcScanService == null) {
+    public void setScanType( boolean firstAutoStarted) {
+        if (!firstAutoStarted  || bqcScanService == null) {
             return;
         }
         scanHandler.disableScan();
-        mScanType = scanType;
-        scanHandler.setScanType(mScanType);
+        scanHandler.setScanType();
         scanHandler.enableScan();
     }
 
@@ -143,52 +140,50 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
     }
 
     @Override
-    public BQCScanEngine.EngineCallback makeScanResultCallback(ScanType type) {
+    public BQCScanEngine.EngineCallback makeScanResultCallback() {
         MaScanCallbackWithDecodeInfoSupport maCallback = null;
-        if (type == ScanType.SCAN_MA) {
-            maCallback = new MaScanCallbackWithDecodeInfoSupport() {
-                @Override
-                public void onResultMa(final MultiMaScanResult maScanResult) {
-                    scanSuccess = true;
-                    if(scanHandler != null) {
-                        scanHandler.disableScan();
-                        scanHandler.shootSound();
-                    }
+        maCallback = new MaScanCallbackWithDecodeInfoSupport() {
+            @Override
+            public void onResultMa(final MultiMaScanResult maScanResult) {
+                scanSuccess = true;
+                if(scanHandler != null) {
+                    scanHandler.disableScan();
+                    scanHandler.shootSound();
+                }
 //                    onResultShow();
 //                    if (mScanTopView != null) {
 //                        mScanTopView.onResultMa(maScanResult);
 //                    }
-                    if (maScanResult == null) {
+                if (maScanResult == null) {
 //                        Toast.makeText(getContext().getApplicationContext(), "error:maScanResult ==null", Toast.LENGTH_LONG).show();
-                        Log.e("testtag", "error:maScanResult ==null");
-                        restartScan();
-                        return;
+                    Log.e("testtag", "error:maScanResult ==null");
+                    restartScan();
+                    return;
+                }
+                Log.d("testtag", "onResultMa: " + maScanResult.maScanResults[0].text);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showAlertDialog(maScanResult.maScanResults[0].text);
                     }
-                    Log.d("testtag", "onResultMa: " + maScanResult.maScanResults[0].text);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            showAlertDialog(maScanResult.maScanResults[0].text);
-                        }
-                    });
+                });
 //                    scanHandler.enableScan();
-                }
+            }
 
-                @Override
-                public void onGetMaProportion(float v) {
-                    if (null != mScanTopView) {
-                        mScanTopView.onGetMaProportion(v);
-                    }
+            @Override
+            public void onGetMaProportion(float v) {
+                if (null != mScanTopView) {
+                    mScanTopView.onGetMaProportion(v);
                 }
+            }
 
-                @Override
-                public void onGetAvgGray(int i) {
-                    if (null != mScanTopView) {
-                        mScanTopView.onGetAvgGray(i);
-                    }
+            @Override
+            public void onGetAvgGray(int i) {
+                if (null != mScanTopView) {
+                    mScanTopView.onGetAvgGray(i);
                 }
-            };
-        }
+            }
+        };
         return maCallback;
     }
 
