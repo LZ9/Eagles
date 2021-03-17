@@ -28,7 +28,6 @@ public class ScanHandler {
     private ScanResultCallbackProducer scanResultCallbackProducer;
     private MediaPlayer shootMP;
     private BQCScanService bqcScanService;
-    private int curState = 0;
 
     public ScanHandler() {
         scanHandlerThread = new HandlerThread("Scan-Recognized", Thread.MAX_PRIORITY);
@@ -45,7 +44,6 @@ public class ScanHandler {
             @Override
             public void run() {
                 ScanHandler.this.bqcScanService = bqcScanService;
-                curState = 1;
             }
         });
     }
@@ -67,7 +65,6 @@ public class ScanHandler {
         scanHandler.post(new Runnable() {
             @Override
             public void run() {
-                curState = 4;
                 bqcScanService.setScanEnable(true);
             }
         });
@@ -77,7 +74,6 @@ public class ScanHandler {
         scanHandler.post(new Runnable() {
             @Override
             public void run() {
-                curState = 5;
                 bqcScanService.setScanType(EaglesManager.TAG);
             }
         });
@@ -87,7 +83,6 @@ public class ScanHandler {
         scanHandler.post(new Runnable() {
             @Override
             public void run() {
-                curState = 6;
                 bqcScanService.setScanEnable(false);
             }
         });
@@ -128,12 +123,6 @@ public class ScanHandler {
     }
 
     public void reset() {
-        scanHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                curState = 0;
-            }
-        });
     }
 
     public void setContext(final Context context, final ScanResultCallbackProducer scanResultCallbackProducer) {

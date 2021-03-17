@@ -9,16 +9,10 @@
 
    <com.rexnjc.ui.widget.ma.ToolScanTopView
        android:id="@+id/top_view"
+       android:visibility="gone"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
    </com.rexnjc.ui.widget.ma.ToolScanTopView>
-
-   <View
-       android:id="@+id/cover"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:visibility="gone"
-       android:background="#c0000000" />
 
 </RelativeLayout>

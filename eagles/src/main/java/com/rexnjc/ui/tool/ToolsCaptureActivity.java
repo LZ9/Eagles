@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -35,7 +34,7 @@ import com.rexnjc.ui.util.AutoZoomOperator;
 import com.rexnjc.ui.widget.APTextureView;
 import com.rexnjc.ui.widget.ma.ToolScanTopView;
 
-public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanResultCallbackProducer, View.OnClickListener{
+public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanResultCallbackProducer{
 
     public static void start(Context context) {
         Intent starter = new Intent(context, ToolsCaptureActivity.class);
@@ -51,7 +50,6 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
     private ScanHandler scanHandler;
     private boolean firstAutoStarted = false;
     private boolean isPermissionGranted = false;
-    private View coverView;
 
     // 是否已经摄像头扫码成功
     private int pauseOrResume = 0;
@@ -93,8 +91,6 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
         mScanTopView = (ToolScanTopView) findViewById(R.id.top_view);
         mScanTopView.setTopViewCallback(topViewCallback);
         mScanTopView.attachActivity(this);
-        coverView = findViewById(R.id.cover);
-        coverView.setOnClickListener(this);
     }
 
     /**
@@ -208,16 +204,6 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void onResultShow() {
-        if(!this.isFinishing()) {
-            runOnUiThread(new Runnable() {
-                @Override public void run() {
-                    coverView.setVisibility(View.VISIBLE);
-                }
-            });
-        }
-    }
-
     public void startPreview() {
         cameraScanHandler.openCamera();
         // 重设对焦参数
@@ -237,31 +223,25 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
     }
 
     private void initScanRect() {
-        mScanTopView.onStartScan();
         if (scanRect == null) {
-            scanRect = mScanTopView.getScanRect(
-                    bqcScanService.getCamera(), mSurfaceView.getWidth(), mSurfaceView.getHeight());
 
-            float cropWidth = mScanTopView.getCropWidth();
-            Log.d(TAG, "cropWidth: " + cropWidth);
-            if (cropWidth > 0) {
-                // 预览放大 ＝ 屏幕宽 ／ 裁剪框宽
-                WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-                float screenWith = wm.getDefaultDisplay().getWidth();
-                float screenHeight = wm.getDefaultDisplay().getHeight();
-                float previewScale = screenWith / cropWidth;
-                if (previewScale < 1.0f) {
-                    previewScale = 1.0f;
-                }
-                if (previewScale > 1.5f) {
-                    previewScale = 1.5f;
-                }
-                Log.d(TAG, "previewScale: " + previewScale);
-                Matrix transform = new Matrix();
-                transform.setScale(previewScale, previewScale, screenWith / 2, screenHeight / 2);
-                mSurfaceView.setTransform(transform);
-                bqcScanService.setScanRegion(scanRect);
-            }
+            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+            float screenWith = wm.getDefaultDisplay().getWidth();
+            float screenHeight = wm.getDefaultDisplay().getHeight();
+            scanRect = new Rect(0, 0, wm.getDefaultDisplay().getWidth(), wm.getDefaultDisplay().getHeight());
+            float previewScale  = 1.0f;
+//            float previewScale = screenWith / cropWidth;
+//            if (previewScale < 1.0f) {
+//                previewScale = 1.0f;
+//            }
+//            if (previewScale > 1.5f) {
+//                previewScale = 1.5f;
+//            }
+            Log.d(TAG, "previewScale: " + previewScale);
+            Matrix transform = new Matrix();
+            transform.setScale(previewScale, previewScale, screenWith , screenHeight );
+            mSurfaceView.setTransform(transform);
+            bqcScanService.setScanRegion(scanRect);
         } else {
             bqcScanService.setScanRegion(scanRect);
         }
@@ -455,13 +435,6 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
         public void turnEnvDetection(boolean on) {
         }
     };
-
-    @Override public void onClick(View v) {
-        if(v.getId() == R.id.cover) {
-            v.setVisibility(View.GONE);
-            restartScan();
-        }
-    }
 
     public boolean isTorchOn() {
         return bqcScanService != null ? bqcScanService.isTorchOn() : false;

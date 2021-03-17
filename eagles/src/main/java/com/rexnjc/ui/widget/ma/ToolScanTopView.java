@@ -1,8 +1,6 @@
 package com.rexnjc.ui.widget.ma;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +9,6 @@ import android.widget.RelativeLayout;
 import com.alipay.mobile.mascanengine.IOnMaSDKDecodeInfo;
 import com.lodz.android.eagles.R;
 import com.rexnjc.ui.tool.ToolsCaptureActivity;
-import com.rexnjc.ui.widget.ScanRayView;
 import com.rexnjc.ui.widget.TorchView;
 
 /**
@@ -23,15 +20,12 @@ import com.rexnjc.ui.widget.TorchView;
 public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeInfo {
     public static final String TAG = "ToolScanTopView";
     protected TopViewCallback topViewCallback;
-    private ScanRayView scanRayView;            // 扫描动画
     private TorchView torchView;
     private ToolsCaptureActivity mActivity;
     private int low_threshold = 70;
     private Runnable showTorchRunnable;
     private int high_threshold = 140;
     private Runnable hideTorchRunnable;
-    private int autoZoomState;
-    private int frameNum = 0;
 
     public ToolScanTopView(Context context) {
         this(context, null);
@@ -56,7 +50,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
 
     private void init(Context ctx) {
         LayoutInflater.from(ctx).inflate(R.layout.view_ma_tool_top, this, true);
-        scanRayView = (ScanRayView) findViewById(R.id.scan_ray_view);
         torchView = (TorchView) findViewById(R.id.torch_view);
         torchView.setOnTorchClickListener(new TorchView.OnTorchClickListener() {
             @Override
@@ -69,10 +62,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
         });
     }
 
-
-    public void onStartScan() {
-        scanRayView.startScaleAnimation();
-    }
 
     public void onResultMa(final com.alipay.mobile.mascanengine.MultiMaScanResult maScanResult) {
         if(mActivity!=null) {
@@ -91,63 +80,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
         }
     }
 
-    public float getCropWidth() {
-        // 裁剪框大小 = 网格动画框大小＊1.1
-        return scanRayView.getWidth() * 1.1f;
-    }
-
-    public Rect getScanRect(Camera camera, int previewWidth, int previewHeight) {
-        if (camera == null) {
-            return null;
-        }
-        int[] location = new int[2];
-        scanRayView.getLocationOnScreen(location);
-        Rect r = new Rect(location[0], location[1],
-                location[0] + scanRayView.getWidth(), location[1] + scanRayView.getHeight());
-        Camera.Size size = null;
-        try {
-            size = camera.getParameters().getPreviewSize();
-        } catch (Exception ex) {
-            return null;
-        }
-        if (size == null) {
-            return null;
-        }
-        double rateX = (double) size.height / (double) previewWidth;
-        double rateY = (double) size.width / (double) previewHeight;
-        // 裁剪框大小 = 网格动画框大小＊1.1
-        int expandX = (int) (scanRayView.getWidth() * 0.05);
-        int expandY = (int) (scanRayView.getHeight() * 0.05);
-        Rect resRect = new Rect(
-                (int) ((r.top - expandY) * rateY),
-                (int) ((r.left - expandX) * rateX),
-                (int) ((r.bottom + expandY) * rateY),
-                (int) ((r.right + expandX) * rateX));
-
-        Rect finalRect = new Rect(
-                resRect.left < 0 ? 0 : resRect.left,
-                resRect.top < 0 ? 0 : resRect.top,
-                resRect.width() > size.width ? size.width : resRect.width(),
-                resRect.height() > size.height ? size.height : resRect.height());
-
-        Rect rect1 = new Rect(
-                finalRect.left / 4 * 4,
-                finalRect.top / 4 * 4,
-                finalRect.right / 4 * 4,
-                finalRect.bottom / 4 * 4);
-
-        int max = Math.max(rect1.right, rect1.bottom);
-        int diff = Math.abs(rect1.right - rect1.bottom) / 8 * 4;
-
-        Rect rect2;
-        if (rect1.right > rect1.bottom) {
-            rect2 = new Rect(rect1.left, rect1.top - diff, max, max);
-        } else {
-            rect2 = new Rect(rect1.left - diff, rect1.top, max, max);
-        }
-        return rect2;
-    }
-
     public void setTopViewCallback(TopViewCallback callback){
         this.topViewCallback = callback;
     }
@@ -157,14 +89,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
             return;
         }
         Log.d(TAG, "The ma proportion is " + v);
-        if(autoZoomState > 1) {
-            return;
-        }
-        if (v <= 0.05 || v >= 0.4 || (++frameNum < 5)) {
-            autoZoomState = 0;
-            return;
-        }
-        autoZoomState = 2;
         final int zoom = (int) (75  - 75 * v);
         mActivity.runOnUiThread(new Runnable() {
             @Override
