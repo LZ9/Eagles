@@ -11,12 +11,7 @@ import android.widget.TextView;
 
 import com.lodz.android.eagles.R;
 
-/**
- * author : leilei.yll
- * date : 3/20/17.
- * email : leilei.yll@alibaba-inc.com
- * 旺旺 : 病已
- */
+/** 手电筒控件 */
 public class TorchView extends LinearLayout implements View.OnClickListener{
 
     private ImageView torchIv;

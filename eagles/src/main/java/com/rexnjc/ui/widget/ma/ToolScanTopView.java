@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.alipay.mobile.mascanengine.IOnMaSDKDecodeInfo;
 import com.lodz.android.eagles.R;
 import com.rexnjc.ui.tool.ToolsCaptureActivity;
-import com.rexnjc.ui.widget.ScaleFinderView;
 import com.rexnjc.ui.widget.ScanRayView;
 import com.rexnjc.ui.widget.TorchView;
 
@@ -21,11 +20,9 @@ import com.rexnjc.ui.widget.TorchView;
  * email : leilei.yll@alibaba-inc.com
  * 旺旺 : 病已
  */
-public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeInfo,
-        TorchView.OnTorchClickListener{
+public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeInfo {
     public static final String TAG = "ToolScanTopView";
     protected TopViewCallback topViewCallback;
-    private ScaleFinderView scaleFinderView;    // 扫描框
     private ScanRayView scanRayView;            // 扫描动画
     private TorchView torchView;
     private ToolsCaptureActivity mActivity;
@@ -59,11 +56,17 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
 
     private void init(Context ctx) {
         LayoutInflater.from(ctx).inflate(R.layout.view_ma_tool_top, this, true);
-        scaleFinderView = (ScaleFinderView) findViewById(R.id.scale_finder_view);
         scanRayView = (ScanRayView) findViewById(R.id.scan_ray_view);
-        scanRayView.setFinderView(scaleFinderView);
         torchView = (TorchView) findViewById(R.id.torch_view);
-        torchView.setOnTorchClickListener(this);
+        torchView.setOnTorchClickListener(new TorchView.OnTorchClickListener() {
+            @Override
+            public void onTorchStateSwitch() {
+                if (topViewCallback != null) {
+                    boolean isTorchOn = topViewCallback.turnTorch();
+                    onTorchState(isTorchOn);
+                }
+            }
+        });
     }
 
 
@@ -200,13 +203,6 @@ public class ToolScanTopView  extends RelativeLayout implements IOnMaSDKDecodeIn
                 }
                 mActivity.runOnUiThread(hideTorchRunnable);
             }
-        }
-    }
-
-    @Override public void onTorchStateSwitch() {
-        if (topViewCallback != null) {
-            boolean isTorchOn = topViewCallback.turnTorch();
-            onTorchState(isTorchOn);
         }
     }
 

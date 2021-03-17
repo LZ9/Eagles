@@ -141,8 +141,7 @@ public class ToolsCaptureActivity extends Activity implements ScanHandler.ScanRe
 
     @Override
     public BQCScanEngine.EngineCallback makeScanResultCallback() {
-        MaScanCallbackWithDecodeInfoSupport maCallback = null;
-        maCallback = new MaScanCallbackWithDecodeInfoSupport() {
+        MaScanCallbackWithDecodeInfoSupport maCallback = new MaScanCallbackWithDecodeInfoSupport() {
             @Override
             public void onResultMa(final MultiMaScanResult maScanResult) {
                 scanSuccess = true;
