@@ -4,6 +4,7 @@
 
    <com.rexnjc.ui.widget.APTextureView
        android:id="@+id/surfaceView"
+       android:visibility="visible"
        android:layout_width="match_parent"
        android:layout_height="match_parent"/>
 
