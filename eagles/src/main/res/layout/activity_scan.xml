@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+   <com.rexnjc.ui.widget.APTextureView
+       android:id="@+id/surfaceView"
+       android:visibility="visible"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
+
+   <com.rexnjc.ui.widget.ma.ToolScanTopView
+       android:id="@+id/top_view"
+       android:visibility="gone"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+   </com.rexnjc.ui.widget.ma.ToolScanTopView>
+
+</RelativeLayout>
